@@ -1,12 +1,13 @@
 '''
 Base Question class for Quiz
-Codeskulptor Link: http://www.codeskulptor.org/#user40_nva4UorE3O_0.py
+Codeskulptor Link: http://www.codeskulptor.org/#user40_nva4UorE3O_2.py
 '''
 '''
 Base Question class for Quiz
 '''
 import random
 DESKTOP = True
+DESKTOP = False
 if DESKTOP == False:
     import simplegui
     PATH = "https://dl.dropbox.com/s/"
@@ -100,7 +101,7 @@ class Question:
             print 'You entered', choice, ',',
             if choice == self.getCorrectData():
                 print "Correct!! Good Job!"
-                correct_sound.play()
+                #correct_sound.play()
             else:
                 print "WRONG! Please try again."
     def drawQuestion(self, choice = None):
@@ -130,6 +131,7 @@ def main():
     # get things rolling
     #timer.start()
     frame.start()
+    welcome_sound.play()
     q1 = Question("Test Question", [Data('1'), Data('2'), Data('3'), Data('4')], 2)
     q1.printQuestion()
     q1.printQuestion('A')
