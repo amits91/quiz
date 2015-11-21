@@ -11,6 +11,19 @@ def conv_choice_list(ch):
         choices[CHOICE_LABELS[i]] = ch[i]
     return choices
 
+
+class Choice:
+    def __init__(self, text, img = None)
+        self._text = text
+        self._img = img
+    def getText(self):
+        return self._text
+    def __str__(self):
+        return str(self._text)
+    def draw(self, pos):
+        pass
+
+
 class Question:
     '''
     Textual Question
