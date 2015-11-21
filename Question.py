@@ -1,9 +1,16 @@
 '''
 Base Question class for Quiz
+Codeskulptor Link: http://www.codeskulptor.org/#user40_nva4UorE3O_0.py
+'''
+'''
+Base Question class for Quiz
 '''
 import random
+import simplegui
 
 CHOICE_LABELS = ['A', 'B', 'C', 'D']
+WIDTH = 800
+HEIGHT = 600
 
 def conv_choice_list(ch):
     choices = {}
@@ -40,9 +47,9 @@ class ImageInfo:
 q1_info = ImageInfo([64, 64], [128, 128], 17, 24, True)
 q1_image = simplegui.load_image("http://commondatastorage.googleapis.com/codeskulptor-assets/lathrop/explosion_alpha.png")
 
-welcome_sound = simplegui.load_sound("https://www.dropbox.com/s/aboqginatbi5tpe/Welcome.mp3?dl=0")
-wrong_sound   = simplegui.load_sound("https://www.dropbox.com/s/4wy0o9lsdgeh729/Wrong.mp3?dl=0")
-correct_sound = simplegui.load_sound("https://www.dropbox.com/s/stu10xsbzd9svcd/Right.mp3?dl=0")
+welcome_sound = simplegui.load_sound("https://dl.dropbox.com/s/aboqginatbi5tpe/Welcome.mp3")
+wrong_sound   = simplegui.load_sound("https://dl.dropbox.com/s/4wy0o9lsdgeh729/Wrong.mp3")
+correct_sound = simplegui.load_sound("https://dl.dropbox.com/s/stu10xsbzd9svcd/Right.mp3")
 
 class Data:
     def __init__(self, text, img = None):
@@ -81,6 +88,7 @@ class Question:
             print 'You entered', choice, ',',
             if choice == self.getCorrectData():
                 print "Correct!! Good Job!"
+                correct_sound.play()
             else:
                 print "WRONG! Please try again."
     def drawQuestion(self, choice = None):
@@ -99,6 +107,17 @@ def main():
     main function for testing
     :return: None
     '''
+    # initialize stuff
+    frame = simplegui.create_frame("Asteroids", WIDTH, HEIGHT)
+    # register handlers
+    #frame.set_keyup_handler(keyup)
+    #frame.set_keydown_handler(keydown)
+    #frame.set_mouseclick_handler(click)
+    #frame.set_draw_handler(draw)
+    #timer = simplegui.create_timer(1000.0, rock_spawner)
+    # get things rolling
+    #timer.start()
+    frame.start()
     q1 = Question("Test Question", [Data('1'), Data('2'), Data('3'), Data('4')], 2)
     q1.printQuestion()
     q1.printQuestion('A')
@@ -107,6 +126,7 @@ def main():
     q1.printQuestion()
     q1.printQuestion('C')
     q1.printQuestion(q1.getCorrectData())
+
 
 if __name__ == '__main__':
     main()
