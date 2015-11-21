@@ -132,14 +132,17 @@ def selectD():
 def setup_frame():
     # initialize stuff
     frame = simplegui.create_frame("QUIZ", WIDTH, HEIGHT)
+    frame.set_canvas_background("Pink")
     # register handlers
     #frame.set_keyup_handler(keyup)
     #frame.set_keydown_handler(keydown)
     #frame.set_mouseclick_handler(click)
     #frame.set_draw_handler(draw
+    frame.add_label("Game Controls")
     frame.add_button("Restart", restart, 100)
     frame.add_button("Next Question", next, 100)
     frame.add_button("Previous Question", prev, 100)
+    frame.add_label("Select Your Answer")
     frame.add_button("A", selectA, 100)
     frame.add_button("B", selectB, 100)
     frame.add_button("C", selectC, 100)
