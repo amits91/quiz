@@ -7,6 +7,13 @@ Base Question class for Quiz
 '''
 import random
 DESKTOP = True
+CHOICE_LABELS = ['A', 'B', 'C', 'D']
+WIDTH = 800
+HEIGHT = 600
+FONT_COLOR = 'Black'
+FONT_SIZE = 15
+quiz_started = False
+
 # DESKTOP = False
 if DESKTOP == False:
     import simplegui
@@ -55,13 +62,6 @@ betu_info = ImageInfo([111, 122], [222, 244])
 # wrong_sound   = simplegui.load_sound(PATH + WRONG_PREFIX + "Wrong.mp3")
 # correct_sound = simplegui.load_sound(PATH + CORRECT_SOUND + "Right.mp3")
 
-CHOICE_LABELS = ['A', 'B', 'C', 'D']
-WIDTH = 800
-HEIGHT = 600
-FONT_COLOR = 'Black'
-
-quiz_started = False
-
 def conv_choice_list(ch):
     choices = {}
     for i in range(len(ch)):
@@ -76,8 +76,8 @@ class Data:
         return self._text
     def __str__(self):
         return str(self._text)
-    def draw(self, pos, isSelected = False):
-        pass
+    def draw(self, canvas, pos, isSelected = False):
+        canvas.draw_text(self._text, pos, FONT_SIZE, FONT_COLOR)
 
 
 class Question:
@@ -108,9 +108,19 @@ class Question:
                 #correct_sound.play()
             else:
                 print "WRONG! Please try again."
-    def drawQuestion(self, choice = None):
-        # self.draw(choice)
-        pass
+    def draw(self, canvas, choice = None):
+        # canvas.draw_text("", [10, 100], FONT_SIZE, FONT_COLOR)
+        self._question.draw(canvas, [10, 100])
+        selected = False
+        pos = [10, 200]
+        for ch in CHOICE_LABELS:
+            pos[0] = 10
+            canvas.draw_text(ch + ": ", pos, FONT_SIZE, FONT_COLOR)
+            pos[0] = 10 + FONT_SIZE * 2
+            if ch == choice:
+                selected = True
+            self._choices[ch].draw(canvas, pos, selected)
+            pos[1] = pos[1] + FONT_SIZE * 2
     def resetQuestion(self):
         correct = self._choices[self._correct]
         chlist = self._choices.values()
@@ -137,11 +147,14 @@ def selectC():
 def selectD():
     pass
 
+q1 = Question(Data("Test Question"), [Data('1'), Data('2'), Data('3'), Data('4')], 2)
 def drawQuestion(canvas):
-    canvas.draw_text("Question", [50, 50], 22, FONT_COLOR)
-    canvas.draw_text("Score", [680, 50], 22, FONT_COLOR)
-    canvas.draw_text(str(1), [50, 80], 22, FONT_COLOR)
-    canvas.draw_text(str(1), [680, 80], 22, FONT_COLOR)
+    global q1
+    canvas.draw_text("Question", [10, 30], FONT_SIZE, FONT_COLOR)
+    canvas.draw_text("Score", [680, 30], FONT_SIZE, FONT_COLOR)
+    canvas.draw_text(str(1), [20, 55], FONT_SIZE, FONT_COLOR)
+    canvas.draw_text(str(1), [680, 55], FONT_SIZE, FONT_COLOR)
+    q1.draw(canvas)
 
 def drawWelcomeScreen(canvas):
     canvas.draw_text("Welcome Shambhavi", [150, 100], 40, FONT_COLOR)
@@ -187,7 +200,7 @@ def main():
     '''
     # welcome_sound.play()
     setup_frame()
-    q1 = Question("Test Question", [Data('1'), Data('2'), Data('3'), Data('4')], 2)
+    global q1
     q1.printQuestion()
     q1.printQuestion('A')
     q1.printQuestion('C')
