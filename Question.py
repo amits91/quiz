@@ -183,7 +183,7 @@ def selectD():
     global current_question
     current_question.setUserChoice('D')
 
-current_question = Question(Data("Test Question"), [Data('1'), Data('2'), Data('3'), Data('4')], 2)
+current_question = Question(Data("What is 5 times 2?"), [Data('9'), Data('10'), Data('11'), Data('12')], 1)
 def drawQuestion(canvas):
     global current_question
     canvas.draw_text("Question", [10, 30], FONT_SIZE, FONT_COLOR)
