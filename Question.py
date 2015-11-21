@@ -21,21 +21,6 @@ else:
     WRONG_PREFIX = ""
     CORRECT_SOUND = ""
 
-# q1_image = simplegui.load_image("http://commondatastorage.googleapis.com/codeskulptor-assets/lathrop/explosion_alpha.png")
-# welcome_sound = simplegui.load_sound(PATH + WELCOME_PREFIX + "Welcome.mp3")
-# wrong_sound   = simplegui.load_sound(PATH + WRONG_PREFIX + "Wrong.mp3")
-# correct_sound = simplegui.load_sound(PATH + CORRECT_SOUND + "Right.mp3")
-
-CHOICE_LABELS = ['A', 'B', 'C', 'D']
-WIDTH = 800
-HEIGHT = 600
-
-def conv_choice_list(ch):
-    choices = {}
-    for i in range(len(ch)):
-        choices[CHOICE_LABELS[i]] = ch[i]
-    return choices
-
 class ImageInfo:
     def __init__(self, center, size, radius = 0, lifespan = None, animated = False):
         self.center = center
@@ -63,6 +48,23 @@ class ImageInfo:
         return self.animated
 
 q1_info = ImageInfo([64, 64], [128, 128], 17, 24, True)
+
+betu_image = simplegui.load_image("https://dl.dropbox.com/s/e0ven0zimd60q16/betu.jpg")
+betu_info = ImageInfo([111, 122], [222, 244])
+# welcome_sound = simplegui.load_sound(PATH + WELCOME_PREFIX + "Welcome.mp3")
+# wrong_sound   = simplegui.load_sound(PATH + WRONG_PREFIX + "Wrong.mp3")
+# correct_sound = simplegui.load_sound(PATH + CORRECT_SOUND + "Right.mp3")
+
+CHOICE_LABELS = ['A', 'B', 'C', 'D']
+WIDTH = 800
+HEIGHT = 600
+FONT_COLOR = 'Black'
+
+def conv_choice_list(ch):
+    choices = {}
+    for i in range(len(ch)):
+        choices[CHOICE_LABELS[i]] = ch[i]
+    return choices
 
 class Data:
     def __init__(self, text, img = None):
@@ -116,7 +118,7 @@ class Question:
 
 def restart():
     pass
-def next():
+def nextQuestion():
     pass
 def prev():
     pass
@@ -129,6 +131,21 @@ def selectC():
 def selectD():
     pass
 
+def drawQuestion(canvas):
+    canvas.draw_text("Question", [50, 50], 22, FONT_COLOR)
+    canvas.draw_text("Score", [680, 50], 22, FONT_COLOR)
+    canvas.draw_text(str(1), [50, 80], 22, FONT_COLOR)
+    canvas.draw_text(str(1), [680, 80], 22, FONT_COLOR)
+
+def drawWelcomeScreen(canvas):
+    canvas.draw_text("Welcome Shambhavi", [150, 100], 40, FONT_COLOR)
+    canvas.draw_image(betu_image, betu_info.get_center(), betu_info.get_size(), [WIDTH / 2, HEIGHT / 2], betu_info.get_size())
+
+
+def draw(canvas):
+    # draw UI
+    drawWelcomeScreen(canvas)
+
 def setup_frame():
     # initialize stuff
     frame = simplegui.create_frame("QUIZ", WIDTH, HEIGHT)
@@ -137,10 +154,10 @@ def setup_frame():
     #frame.set_keyup_handler(keyup)
     #frame.set_keydown_handler(keydown)
     #frame.set_mouseclick_handler(click)
-    #frame.set_draw_handler(draw
+    frame.set_draw_handler(draw)
     frame.add_label("Game Controls")
     frame.add_button("Restart", restart, 100)
-    frame.add_button("Next Question", next, 100)
+    frame.add_button("Next Question", nextQuestion, 100)
     frame.add_button("Previous Question", prev, 100)
     frame.add_label("Select Your Answer")
     frame.add_button("A", selectA, 100)
