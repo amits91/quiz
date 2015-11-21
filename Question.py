@@ -13,6 +13,7 @@ HEIGHT = 600
 FONT_COLOR = 'Black'
 FONT_SIZE = 15
 quiz_started = False
+quiz_finished = False
 
 # DESKTOP = False
 if DESKTOP == False:
@@ -157,7 +158,11 @@ class Question:
             canvas.draw_text(msg, pos, font_size, font_color)
     def setUserChoice(self, choice):
         self._user_choice = choice
-
+    def isCorrect(self):
+        if self._user_choice == self._correct:
+            return 1
+        else:
+            return 0
     def resetQuestion(self):
         correct = self._choices[self._correct]
         chlist = self._choices.values()
@@ -166,13 +171,40 @@ class Question:
         self._correct = CHOICE_LABELS[chlist.index(correct)]
         self._user_choice = None
 
+questions = [
+    Question(Data("What is 5 times 2?"), [Data('9'), Data('10'), Data('11'), Data('12')], 1),
+    Question(Data("What is 5 times 2?"), [Data('9'), Data('10'), Data('11'), Data('12')], 1),
+    Question(Data("What is 5 times 2?"), [Data('9'), Data('10'), Data('11'), Data('12')], 1),
+    Question(Data("What is 5 times 2?"), [Data('9'), Data('10'), Data('11'), Data('12')], 1),
+    Question(Data("What is 5 times 2?"), [Data('9'), Data('10'), Data('11'), Data('12')], 1)
+]
+qnum = 0
+score = 0
+def init_game():
+    global quiz_started, qnum, current_question, score, quiz_finished
+    quiz_started = False
+    qnum = 0
+    score = 0
+    quiz_finished = False
+
 def restart():
     global quiz_started
-    quiz_started = False
+    init_game()
 
 def nextQuestion():
-    global quiz_started
+    global quiz_started, current_question, questions, qnum, score, quiz_finished
+    if quiz_started == False:
+        qnum = 0
+    else:
+        if quiz_finished == False:
+            score = score + current_question.isCorrect()
+        qnum = qnum + 1
     quiz_started = True
+    if qnum == len(questions):
+        quiz_finished = True
+        qnum = qnum - 1
+    else:
+        current_question = questions[qnum]
 def resetQuestion():
     global current_question
     current_question.resetQuestion()
@@ -192,14 +224,16 @@ def selectD():
     global current_question
     current_question.setUserChoice('D')
 
-current_question = Question(Data("What is 5 times 2?"), [Data('9'), Data('10'), Data('11'), Data('12')], 1)
+
 def drawQuestion(canvas):
-    global current_question
+    global current_question, qnum, score, questions
     canvas.draw_text("Question", [10, 30], FONT_SIZE, FONT_COLOR)
     canvas.draw_text("Score", [680, 30], FONT_SIZE, FONT_COLOR)
-    canvas.draw_text(str(1), [20, 55], FONT_SIZE, FONT_COLOR)
-    canvas.draw_text(str(1), [680, 55], FONT_SIZE, FONT_COLOR)
+    canvas.draw_text(str(qnum + 1), [20, 55], FONT_SIZE, FONT_COLOR)
+    canvas.draw_text(str(score) + '/' + str(len(questions)), [680, 55], FONT_SIZE, FONT_COLOR)
     current_question.draw(canvas)
+    if quiz_finished == True:
+        canvas.draw_text("Finished. Press 'Restart' to start new game.", [50, HEIGHT - 50], 20, 'Red')
 
 def drawWelcomeScreen(canvas):
     canvas.draw_text("Welcome Shambhavi", [150, 100], 40, FONT_COLOR)
