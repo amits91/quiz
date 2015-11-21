@@ -172,11 +172,9 @@ class Question:
         self._user_choice = None
 
 questions = [
-    Question(Data("What is 5 times 2?"), [Data('9'), Data('10'), Data('11'), Data('12')], 1),
-    Question(Data("What is 5 times 2?"), [Data('9'), Data('10'), Data('11'), Data('12')], 1),
-    Question(Data("What is 5 times 2?"), [Data('9'), Data('10'), Data('11'), Data('12')], 1),
-    Question(Data("What is 5 times 2?"), [Data('9'), Data('10'), Data('11'), Data('12')], 1),
-    Question(Data("What is 5 times 2?"), [Data('9'), Data('10'), Data('11'), Data('12')], 1)
+    Question(Data("What is the difference between the greatest and smallest number?\n 99, 23, 30, 89, 1"), [Data('88'), Data('76'), Data('98'), Data('22')], 2),
+    Question(Data("What is 6 times 2 minus 5?"), [Data('12'), Data('7'), Data('17'), Data('16')], 1),
+    Question(Data("What is 2 tens, 2 ones minus 9 ones?"), [Data('13'), Data('12'), Data('31'), Data('14')], 0)
 ]
 qnum = 0
 score = 0
@@ -186,6 +184,8 @@ def init_game():
     qnum = 0
     score = 0
     quiz_finished = False
+    for i in range(len(questions)):
+        questions[i].resetQuestion()
 
 def restart():
     global quiz_started
@@ -270,6 +270,7 @@ def setup_frame():
     #timer = simplegui.create_timer(1000.0, rock_spawner)
     # get things rolling
     #timer.start()
+    init_game()
     frame.start()
 
 
