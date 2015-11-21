@@ -30,9 +30,9 @@ class Question:
         for ch in CHOICE_LABELS:
             qstr = qstr + ch + ': ' + self._choices[ch] + "\n"
         return qstr
-    def showQuestion(self, choice = 0):
+    def showQuestion(self, choice = None):
         print self
-        if choice > 0:
+        if choice != None:
             print 'You entered', choice, ',',
             if choice == self.getCorrectChoice():
                 print "Correct!! Good Job!"
@@ -53,11 +53,11 @@ def main():
     '''
     q1 = Question("Test Question", ['1', '2', '3', '4'], 2)
     q1.showQuestion()
-    q1.showQuestion(1)
-    q1.showQuestion(2)
+    q1.showQuestion('A')
+    q1.showQuestion('C')
     q1.resetQuestion()
     q1.showQuestion()
-    q1.showQuestion(2)
+    q1.showQuestion('C')
     q1.showQuestion(q1.getCorrectChoice())
 
 if __name__ == '__main__':
