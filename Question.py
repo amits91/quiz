@@ -13,14 +13,14 @@ def conv_choice_list(ch):
 
 
 class Choice:
-    def __init__(self, text, img = None)
+    def __init__(self, text, img = None):
         self._text = text
         self._img = img
     def getText(self):
         return self._text
     def __str__(self):
         return str(self._text)
-    def draw(self, pos):
+    def draw(self, pos, isSelected = False):
         pass
 
 
@@ -41,9 +41,9 @@ class Question:
         qstr = qstr + '\n'
         qstr = qstr + "Figure: None\n"
         for ch in CHOICE_LABELS:
-            qstr = qstr + ch + ': ' + self._choices[ch] + "\n"
+            qstr = qstr + ch + ': ' + str(self._choices[ch]) + "\n"
         return qstr
-    def showQuestion(self, choice = None):
+    def printQuestion(self, choice = None):
         print self
         if choice != None:
             print 'You entered', choice, ',',
@@ -51,6 +51,9 @@ class Question:
                 print "Correct!! Good Job!"
             else:
                 print "WRONG! Please try again."
+    def drawQuestion(self, choice = None):
+        # self.draw(choice)
+        pass
     def resetQuestion(self):
         correct = self._choices[self._correct]
         chlist = self._choices.values()
@@ -64,14 +67,14 @@ def main():
     main function for testing
     :return: None
     '''
-    q1 = Question("Test Question", ['1', '2', '3', '4'], 2)
-    q1.showQuestion()
-    q1.showQuestion('A')
-    q1.showQuestion('C')
+    q1 = Question("Test Question", [Choice('1'), Choice('2'), Choice('3'), Choice('4')], 2)
+    q1.printQuestion()
+    q1.printQuestion('A')
+    q1.printQuestion('C')
     q1.resetQuestion()
-    q1.showQuestion()
-    q1.showQuestion('C')
-    q1.showQuestion(q1.getCorrectChoice())
+    q1.printQuestion()
+    q1.printQuestion('C')
+    q1.printQuestion(q1.getCorrectChoice())
 
 if __name__ == '__main__':
     main()
