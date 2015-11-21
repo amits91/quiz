@@ -83,7 +83,10 @@ class Data:
     def __str__(self):
         return str(self._text)
     def draw(self, canvas, pos, isSelected = False):
-        canvas.draw_text(self._text, pos, FONT_SIZE, FONT_COLOR)
+        font_color = FONT_COLOR
+        if isSelected == True:
+            font_color = 'Blue'
+        canvas.draw_text(self._text, pos, FONT_SIZE, font_color)
 
 
 class Question:
@@ -124,10 +127,16 @@ class Question:
         pos = [10, 200]
         for ch in CHOICE_LABELS:
             pos[0] = 10
-            canvas.draw_text(ch + ": ", pos, FONT_SIZE, FONT_COLOR)
-            pos[0] = 10 + FONT_SIZE * 2
+            font_size = FONT_SIZE
+            font_color = FONT_COLOR
             if ch == choice:
                 selected = True
+                font_color = 'Blue'
+            else:
+                selected = False
+                font_color = FONT_COLOR
+            canvas.draw_text(ch + ": ", pos, font_size, font_color)
+            pos[0] = 10 + font_size * 2
             self._choices[ch].draw(canvas, pos, selected)
             # pos[1] = pos[1] + FONT_SIZE * 2
             pos[1] = pos[1] + self._choices[ch].getHeight()
