@@ -27,23 +27,23 @@ class Question:
         qstr = "Question: " + self.getInstruction()
         qstr = qstr + '\n'
         qstr = qstr + "Figure: None\n"
-        qstr = qstr + "A:" + str(self._choices[0]) + "\n"
-        qstr = qstr + "B:" + str(self._choices[1]) + "\n"
-        qstr = qstr + "C:" + str(self._choices[2]) + "\n"
-        qstr = qstr + "D:" + str(self._choices[3])
+        for ch in CHOICE_LABELS:
+            qstr = qstr + ch + ': ' + self._choices[ch] + "\n"
         return qstr
     def showQuestion(self, choice = 0):
         print self
         if choice > 0:
-            print 'You entered', CHOICE[choice]
+            print 'You entered', choice, ',',
             if choice == self.getCorrectChoice():
                 print "Correct!! Good Job!"
             else:
                 print "WRONG! Please try again."
     def resetQuestion(self):
         correct = self._choices[self._correct]
-        random.shuffle(self._choices)
-        self._correct = self._choices.index(correct)
+        chlist = self._choices.values()
+        random.shuffle(chlist)
+        self._choices = conv_choice_list(chlist)
+        self._correct = CHOICE_LABELS[chlist.index(correct)]
 
 
 def main():
@@ -51,7 +51,7 @@ def main():
     main function for testing
     :return: None
     '''
-    q1 = Question()
+    q1 = Question("Test Question", ['1', '2', '3', '4'], 2)
     q1.showQuestion()
     q1.showQuestion(1)
     q1.showQuestion(2)
