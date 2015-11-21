@@ -60,6 +60,8 @@ WIDTH = 800
 HEIGHT = 600
 FONT_COLOR = 'Black'
 
+quiz_started = False
+
 def conv_choice_list(ch):
     choices = {}
     for i in range(len(ch)):
@@ -117,9 +119,13 @@ class Question:
         self._correct = CHOICE_LABELS[chlist.index(correct)]
 
 def restart():
-    pass
+    global quiz_started
+    quiz_started = False
+
 def nextQuestion():
-    pass
+    global quiz_started
+    quiz_started = True
+
 def prev():
     pass
 def selectA():
@@ -143,8 +149,12 @@ def drawWelcomeScreen(canvas):
 
 
 def draw(canvas):
+    global quiz_started
     # draw UI
-    drawWelcomeScreen(canvas)
+    if quiz_started == False:
+        drawWelcomeScreen(canvas)
+    else:
+        drawQuestion(canvas)
 
 def setup_frame():
     # initialize stuff
