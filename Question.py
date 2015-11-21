@@ -88,6 +88,8 @@ class Question:
         self._question = question
         self._choices = conv_choice_list(choice_list)
         self._correct = CHOICE_LABELS[correct_idx]
+        self._user_choice = None
+
     def getInstruction(self):
         return self._question
     def getCorrectData(self):
@@ -108,9 +110,10 @@ class Question:
                 #correct_sound.play()
             else:
                 print "WRONG! Please try again."
-    def draw(self, canvas, choice = None):
+    def draw(self, canvas):
         # canvas.draw_text("", [10, 100], FONT_SIZE, FONT_COLOR)
         self._question.draw(canvas, [10, 100])
+        choice = self._user_choice
         selected = False
         pos = [10, 200]
         for ch in CHOICE_LABELS:
@@ -121,6 +124,18 @@ class Question:
                 selected = True
             self._choices[ch].draw(canvas, pos, selected)
             pos[1] = pos[1] + FONT_SIZE * 2
+        if choice != None:
+            msg = ""
+            pos[0] = 100
+            pos[1] = pos[1] + FONT_SIZE * 2
+            if choice == self.getCorrectData():
+                msg = "Correct!! Good Job!"
+            else:
+                msg = "WRONG! Please try again."
+            canvas.draw_text(msg, pos, FONT_SIZE, FONT_COLOR)
+    def setUserChoice(self, choice):
+        self._user_choice = choice
+
     def resetQuestion(self):
         correct = self._choices[self._correct]
         chlist = self._choices.values()
@@ -135,26 +150,33 @@ def restart():
 def nextQuestion():
     global quiz_started
     quiz_started = True
+def resetQuestion():
+    global current_question
+    current_question.resetQuestion()
 
 def prev():
     pass
 def selectA():
-    pass
+    global current_question
+    current_question.setUserChoice('A')
 def selectB():
-    pass
+    global current_question
+    current_question.setUserChoice('B')
 def selectC():
-    pass
+    global current_question
+    current_question.setUserChoice('C')
 def selectD():
-    pass
+    global current_question
+    current_question.setUserChoice('D')
 
-q1 = Question(Data("Test Question"), [Data('1'), Data('2'), Data('3'), Data('4')], 2)
+current_question = Question(Data("Test Question"), [Data('1'), Data('2'), Data('3'), Data('4')], 2)
 def drawQuestion(canvas):
-    global q1
+    global current_question
     canvas.draw_text("Question", [10, 30], FONT_SIZE, FONT_COLOR)
     canvas.draw_text("Score", [680, 30], FONT_SIZE, FONT_COLOR)
     canvas.draw_text(str(1), [20, 55], FONT_SIZE, FONT_COLOR)
     canvas.draw_text(str(1), [680, 55], FONT_SIZE, FONT_COLOR)
-    q1.draw(canvas)
+    current_question.draw(canvas)
 
 def drawWelcomeScreen(canvas):
     canvas.draw_text("Welcome Shambhavi", [150, 100], 40, FONT_COLOR)
@@ -182,6 +204,7 @@ def setup_frame():
     frame.add_button("Restart", restart, 100)
     frame.add_button("Next Question", nextQuestion, 100)
     frame.add_button("Previous Question", prev, 100)
+    frame.add_button("Reset Question", resetQuestion, 100)
     frame.add_label("Select Your Answer")
     frame.add_button("A", selectA, 100)
     frame.add_button("B", selectB, 100)
@@ -200,14 +223,14 @@ def main():
     '''
     # welcome_sound.play()
     setup_frame()
-    global q1
-    q1.printQuestion()
-    q1.printQuestion('A')
-    q1.printQuestion('C')
-    q1.resetQuestion()
-    q1.printQuestion()
-    q1.printQuestion('C')
-    q1.printQuestion(q1.getCorrectData())
+    global current_question
+    current_question.printQuestion()
+    current_question.printQuestion('A')
+    current_question.printQuestion('C')
+    current_question.resetQuestion()
+    current_question.printQuestion()
+    current_question.printQuestion('C')
+    current_question.printQuestion(q1.getCorrectData())
 
 
 if __name__ == '__main__':
