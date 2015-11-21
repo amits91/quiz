@@ -7,7 +7,7 @@ Base Question class for Quiz
 '''
 import random
 DESKTOP = True
-DESKTOP = False
+# DESKTOP = False
 if DESKTOP == False:
     import simplegui
     PATH = "https://dl.dropbox.com/s/"
@@ -22,9 +22,9 @@ else:
     CORRECT_SOUND = ""
 
 # q1_image = simplegui.load_image("http://commondatastorage.googleapis.com/codeskulptor-assets/lathrop/explosion_alpha.png")
-welcome_sound = simplegui.load_sound(PATH + WELCOME_PREFIX + "Welcome.mp3")
-wrong_sound   = simplegui.load_sound(PATH + WRONG_PREFIX + "Wrong.mp3")
-correct_sound = simplegui.load_sound(PATH + CORRECT_SOUND + "Right.mp3")
+# welcome_sound = simplegui.load_sound(PATH + WELCOME_PREFIX + "Welcome.mp3")
+# wrong_sound   = simplegui.load_sound(PATH + WRONG_PREFIX + "Wrong.mp3")
+# correct_sound = simplegui.load_sound(PATH + CORRECT_SOUND + "Right.mp3")
 
 CHOICE_LABELS = ['A', 'B', 'C', 'D']
 WIDTH = 800
@@ -114,24 +114,49 @@ class Question:
         self._choices = conv_choice_list(chlist)
         self._correct = CHOICE_LABELS[chlist.index(correct)]
 
+def restart():
+    pass
+def next():
+    pass
+def prev():
+    pass
+def selectA():
+    pass
+def selectB():
+    pass
+def selectC():
+    pass
+def selectD():
+    pass
+
+def setup_frame():
+    # initialize stuff
+    frame = simplegui.create_frame("QUIZ", WIDTH, HEIGHT)
+    # register handlers
+    #frame.set_keyup_handler(keyup)
+    #frame.set_keydown_handler(keydown)
+    #frame.set_mouseclick_handler(click)
+    #frame.set_draw_handler(draw
+    frame.add_button("Restart", restart, 100)
+    frame.add_button("Next Question", next, 100)
+    frame.add_button("Previous Question", prev, 100)
+    frame.add_button("A", selectA, 100)
+    frame.add_button("B", selectB, 100)
+    frame.add_button("C", selectC, 100)
+    frame.add_button("D", selectD, 100)
+    #timer = simplegui.create_timer(1000.0, rock_spawner)
+    # get things rolling
+    #timer.start()
+    frame.start()
+
 
 def main():
     '''
     main function for testing
     :return: None
     '''
-    # initialize stuff
-    frame = simplegui.create_frame("Asteroids", WIDTH, HEIGHT)
-    # register handlers
-    #frame.set_keyup_handler(keyup)
-    #frame.set_keydown_handler(keydown)
-    #frame.set_mouseclick_handler(click)
-    #frame.set_draw_handler(draw)
-    #timer = simplegui.create_timer(1000.0, rock_spawner)
-    # get things rolling
-    #timer.start()
-    frame.start()
-    welcome_sound.play()
+    # welcome_sound.play()
+    setup_frame()
     q1 = Question("Test Question", [Data('1'), Data('2'), Data('3'), Data('4')], 2)
     q1.printQuestion()
     q1.printQuestion('A')
