@@ -127,12 +127,18 @@ class Question:
         if choice != None:
             msg = ""
             pos[0] = 100
-            pos[1] = pos[1] + FONT_SIZE * 2
+            font_size = FONT_SIZE
+            font_color = FONT_COLOR
             if choice == self.getCorrectData():
                 msg = "Correct!! Good Job!"
+                font_size = FONT_SIZE * 2
+                font_color = 'Green'
             else:
                 msg = "WRONG! Please try again."
-            canvas.draw_text(msg, pos, FONT_SIZE, FONT_COLOR)
+                font_size = FONT_SIZE
+                font_color = 'Red'
+            pos[1] = pos[1] + FONT_SIZE * 2
+            canvas.draw_text(msg, pos, font_size, font_color)
     def setUserChoice(self, choice):
         self._user_choice = choice
 
@@ -142,6 +148,7 @@ class Question:
         random.shuffle(chlist)
         self._choices = conv_choice_list(chlist)
         self._correct = CHOICE_LABELS[chlist.index(correct)]
+        self._user_choice = None
 
 def restart():
     global quiz_started
