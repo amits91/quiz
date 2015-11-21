@@ -72,8 +72,14 @@ class Data:
     def __init__(self, text, img = None):
         self._text = text
         self._img = img
+        self._width = FONT_SIZE * len(text)
+        self._height = FONT_SIZE * 2
     def getText(self):
         return self._text
+    def getWidth(self):
+        return self._width
+    def getHeight(self):
+        return self._height
     def __str__(self):
         return str(self._text)
     def draw(self, canvas, pos, isSelected = False):
@@ -123,7 +129,8 @@ class Question:
             if ch == choice:
                 selected = True
             self._choices[ch].draw(canvas, pos, selected)
-            pos[1] = pos[1] + FONT_SIZE * 2
+            # pos[1] = pos[1] + FONT_SIZE * 2
+            pos[1] = pos[1] + self._choices[ch].getHeight()
         if choice != None:
             msg = ""
             pos[0] = 100
