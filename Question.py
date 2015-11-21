@@ -210,7 +210,7 @@ def setup_frame():
     frame.add_label("Game Controls")
     frame.add_button("Restart", restart, 100)
     frame.add_button("Next Question", nextQuestion, 100)
-    frame.add_button("Previous Question", prev, 100)
+    # frame.add_button("Previous Question", prev, 100)
     frame.add_button("Reset Question", resetQuestion, 100)
     frame.add_label("Select Your Answer")
     frame.add_button("A", selectA, 100)
