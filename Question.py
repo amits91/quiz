@@ -6,7 +6,24 @@ Codeskulptor Link: http://www.codeskulptor.org/#user40_nva4UorE3O_0.py
 Base Question class for Quiz
 '''
 import random
-import simplegui
+DESKTOP = True
+if DESKTOP == False:
+    import simplegui
+    PATH = "https://dl.dropbox.com/s/"
+    WELCOME_PREFIX = "aboqginatbi5tpe/"
+    WRONG_PREFIX = "4wy0o9lsdgeh729/"
+    CORRECT_SOUND = "stu10xsbzd9svcd/"
+else:
+    import simpleguitk as simplegui
+    PATH = "https://dl.dropbox.com/s/"
+    WELCOME_PREFIX = ""
+    WRONG_PREFIX = ""
+    CORRECT_SOUND = ""
+
+# q1_image = simplegui.load_image("http://commondatastorage.googleapis.com/codeskulptor-assets/lathrop/explosion_alpha.png")
+welcome_sound = simplegui.load_sound(PATH + WELCOME_PREFIX + "Welcome.mp3")
+wrong_sound   = simplegui.load_sound(PATH + WRONG_PREFIX + "Wrong.mp3")
+correct_sound = simplegui.load_sound(PATH + CORRECT_SOUND + "Right.mp3")
 
 CHOICE_LABELS = ['A', 'B', 'C', 'D']
 WIDTH = 800
@@ -45,11 +62,6 @@ class ImageInfo:
         return self.animated
 
 q1_info = ImageInfo([64, 64], [128, 128], 17, 24, True)
-q1_image = simplegui.load_image("http://commondatastorage.googleapis.com/codeskulptor-assets/lathrop/explosion_alpha.png")
-
-welcome_sound = simplegui.load_sound("https://dl.dropbox.com/s/aboqginatbi5tpe/Welcome.mp3")
-wrong_sound   = simplegui.load_sound("https://dl.dropbox.com/s/4wy0o9lsdgeh729/Wrong.mp3")
-correct_sound = simplegui.load_sound("https://dl.dropbox.com/s/stu10xsbzd9svcd/Right.mp3")
 
 class Data:
     def __init__(self, text, img = None):
