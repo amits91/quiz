@@ -15,7 +15,7 @@ if DESKTOP == False:
     CORRECT_SOUND = "stu10xsbzd9svcd/"
 else:
     import simpleguitk as simplegui
-    PATH = "https://dl.dropbox.com/s/"
+    PATH = 'C:\\AMIT_FILES\\Dropbox\\BETU\\Quiz_game\\sound_files\\'
     WELCOME_PREFIX = ""
     WRONG_PREFIX = ""
     CORRECT_SOUND = ""
