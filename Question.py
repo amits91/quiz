@@ -12,6 +12,8 @@ WIDTH = 800
 HEIGHT = 600
 FONT_COLOR = 'Black'
 FONT_SIZE = 15
+SCORE_X = 680
+SCORE_Y = 25
 quiz_started = False
 quiz_finished = False
 
@@ -63,12 +65,6 @@ betu_info = ImageInfo([111, 122], [222, 244])
 # wrong_sound   = simplegui.load_sound(PATH + WRONG_PREFIX + "Wrong.mp3")
 # correct_sound = simplegui.load_sound(PATH + CORRECT_SOUND + "Right.mp3")
 
-def conv_choice_list(ch):
-    choices = {}
-    for i in range(len(ch)):
-        choices[CHOICE_LABELS[i]] = ch[i]
-    return choices
-
 class Data:
     def __init__(self, text):
         self._text = text
@@ -87,6 +83,12 @@ class Data:
         if isSelected == True:
             font_color = 'Blue'
         canvas.draw_text(self._text, pos, FONT_SIZE, font_color)
+
+def conv_choice_list(ch):
+    choices = {}
+    for i in range(len(ch)):
+        choices[CHOICE_LABELS[i]] = Data(str(ch[i]))
+    return choices
 
 class QuestionData(Data):
     def __init__(self, text, choice_list, correct_idx):
@@ -108,6 +110,43 @@ class QuestionData(Data):
             return True
         else:
             return False
+    def __str__(self):
+        qstr = "Question: " + str(self._text)
+        qstr = qstr + '\n'
+        for ch in CHOICE_LABELS:
+            qstr = qstr + ch + ': ' + str(self._choices[ch]) + "\n"
+        return qstr
+
+class QuestionDataTimesSum(QuestionData):
+    def randomizeData(self):
+        self._times = random.randint(2, 11)
+        self._num = random.choice([10, 25, 20, 50, random.randint(2, 10)])
+        self._text = "What is {0} times {1}?".format(str(self._times), str(self._num))
+        t = self._times
+        n = self._num
+        self._choices = conv_choice_list([str(t * n), str(t + n), str(abs((t + 1) * n)), str((t - 1) * n)])
+        self._correct = CHOICE_LABELS[0]
+        QuestionData.randomizeData(self)
+    def __init__(self):
+        self.randomizeData()
+
+# print QuestionDataTimesSum()
+
+class QuestionDataGreatSmall(QuestionData):
+    def randomizeData(self):
+        self._listsz = random.randint(8, 13)
+        self._nums = random.sample(range(1, 100), self._listsz)
+        self._text = "What is the difference between the greatest and smallest number?\n {0}".format(str(self._nums))
+        sorted_list = sorted(self._nums)
+        a = abs(sorted_list[0] - sorted_list[-1])
+        b = abs(sorted_list[1] - sorted_list[-1])
+        c = abs(sorted_list[0] - sorted_list[-2])
+        d = 'None of these'
+        self._choices = conv_choice_list([a, b, c, d])
+        self._correct = CHOICE_LABELS[0]
+        QuestionData.randomizeData(self)
+    def __init__(self):
+        self.randomizeData()
 
 class Question:
     '''
@@ -117,17 +156,10 @@ class Question:
         self._question = question
         self._user_choice = None
 
-    def getInstruction(self):
-        return self._question
     def getCorrectData(self):
         return self._question.getCorrectChoice()
     def __str__(self):
-        qstr = "Question: " + self.getInstruction()
-        qstr = qstr + '\n'
-        # qstr = qstr + "Figure: None\n"
-        for ch in CHOICE_LABELS:
-            qstr = qstr + ch + ': ' + str(self._question.getChoices()[ch]) + "\n"
-        return qstr
+        return str(self._question)
     def printQuestion(self, choice = None):
         print self
         if choice != None:
@@ -185,9 +217,15 @@ class Question:
         self._user_choice = None
 
 questions = [
-    Question(QuestionData("What is the difference between the greatest and smallest number?\n 99, 23, 30, 89, 1", [Data('88'), Data('76'), Data('98'), Data('22')], 2)),
-    Question(QuestionData("What is 6 times 2 minus 5?", [Data('12'), Data('7'), Data('17'), Data('16')], 1)),
-    Question(QuestionData("What is 2 tens, 2 ones minus 9 ones?", [Data('13'), Data('12'), Data('31'), Data('14')], 0))
+    Question(QuestionDataTimesSum()),
+    Question(QuestionDataGreatSmall()),
+    Question(QuestionDataTimesSum()),
+    Question(QuestionDataGreatSmall()),
+    Question(QuestionDataTimesSum()),
+    Question(QuestionDataGreatSmall()),
+    Question(QuestionDataTimesSum()),
+    Question(QuestionDataGreatSmall()),
+    Question(QuestionData("What is 2 tens, 2 ones minus 9 ones?", ['13', '12', '31', '14'], 0))
 ]
 qnum = 0
 score = 0
@@ -237,13 +275,12 @@ def selectD():
     global current_question
     current_question.setUserChoice('D')
 
-
 def drawQuestion(canvas):
     global current_question, qnum, score, questions
-    canvas.draw_text("Question", [10, 30], FONT_SIZE, FONT_COLOR)
-    canvas.draw_text("Score", [680, 30], FONT_SIZE, FONT_COLOR)
-    canvas.draw_text(str(qnum + 1), [20, 55], FONT_SIZE, FONT_COLOR)
-    canvas.draw_text(str(score) + '/' + str(len(questions)), [680, 55], FONT_SIZE, FONT_COLOR)
+    canvas.draw_text("Question", [10, SCORE_Y], FONT_SIZE, FONT_COLOR)
+    canvas.draw_text("Score", [SCORE_X, SCORE_Y], FONT_SIZE, FONT_COLOR)
+    canvas.draw_text(str(qnum + 1), [20, SCORE_Y + FONT_SIZE + 5], FONT_SIZE, FONT_COLOR)
+    canvas.draw_text(str(score) + '/' + str(len(questions)), [SCORE_X + 10, SCORE_Y + FONT_SIZE + 5], FONT_SIZE, FONT_COLOR)
     current_question.draw(canvas)
     if quiz_finished == True:
         canvas.draw_text("Finished. Press 'Restart' to start new game.", [50, HEIGHT - 50], 20, 'Red')
