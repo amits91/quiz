@@ -70,9 +70,8 @@ def conv_choice_list(ch):
     return choices
 
 class Data:
-    def __init__(self, text, img = None):
+    def __init__(self, text):
         self._text = text
-        self._img = img
         self._width = FONT_SIZE * len(text)
         self._height = FONT_SIZE * 2
     def getText(self):
@@ -89,27 +88,45 @@ class Data:
             font_color = 'Blue'
         canvas.draw_text(self._text, pos, FONT_SIZE, font_color)
 
+class QuestionData(Data):
+    def __init__(self, text, choice_list, correct_idx):
+        Data.__init__(self, text)
+        self._choices = conv_choice_list(choice_list)
+        self._correct = CHOICE_LABELS[correct_idx]
+    def getChoices(self):
+        return self._choices
+    def getCorrectChoice(self):
+        return self._correct
+    def randomizeData(self):
+        correct = self._choices[self._correct]
+        chlist = self._choices.values()
+        random.shuffle(chlist)
+        self._choices = conv_choice_list(chlist)
+        self._correct = CHOICE_LABELS[chlist.index(correct)]
+    def isCorrectChoice(self, choice):
+        if choice == self._correct:
+            return True
+        else:
+            return False
 
 class Question:
     '''
     Textual Question
     '''
-    def __init__(self, question, choice_list, correct_idx):
+    def __init__(self, question):
         self._question = question
-        self._choices = conv_choice_list(choice_list)
-        self._correct = CHOICE_LABELS[correct_idx]
         self._user_choice = None
 
     def getInstruction(self):
         return self._question
     def getCorrectData(self):
-        return self._correct
+        return self._question.getCorrectChoice()
     def __str__(self):
         qstr = "Question: " + self.getInstruction()
         qstr = qstr + '\n'
         # qstr = qstr + "Figure: None\n"
         for ch in CHOICE_LABELS:
-            qstr = qstr + ch + ': ' + str(self._choices[ch]) + "\n"
+            qstr = qstr + ch + ': ' + str(self._question.getChoices()[ch]) + "\n"
         return qstr
     def printQuestion(self, choice = None):
         print self
@@ -138,9 +155,9 @@ class Question:
                 font_color = FONT_COLOR
             canvas.draw_text(ch + ": ", pos, font_size, font_color)
             pos[0] = 10 + font_size * 2
-            self._choices[ch].draw(canvas, pos, selected)
+            self._question.getChoices()[ch].draw(canvas, pos, selected)
             # pos[1] = pos[1] + FONT_SIZE * 2
-            pos[1] = pos[1] + self._choices[ch].getHeight()
+            pos[1] = pos[1] + self._question.getChoices()[ch].getHeight()
         if choice != None:
             msg = ""
             pos[0] = 100
@@ -159,22 +176,18 @@ class Question:
     def setUserChoice(self, choice):
         self._user_choice = choice
     def isCorrect(self):
-        if self._user_choice == self._correct:
+        if self._question.isCorrectChoice(self._user_choice):
             return 1
         else:
             return 0
     def resetQuestion(self):
-        correct = self._choices[self._correct]
-        chlist = self._choices.values()
-        random.shuffle(chlist)
-        self._choices = conv_choice_list(chlist)
-        self._correct = CHOICE_LABELS[chlist.index(correct)]
+        self._question.randomizeData()
         self._user_choice = None
 
 questions = [
-    Question(Data("What is the difference between the greatest and smallest number?\n 99, 23, 30, 89, 1"), [Data('88'), Data('76'), Data('98'), Data('22')], 2),
-    Question(Data("What is 6 times 2 minus 5?"), [Data('12'), Data('7'), Data('17'), Data('16')], 1),
-    Question(Data("What is 2 tens, 2 ones minus 9 ones?"), [Data('13'), Data('12'), Data('31'), Data('14')], 0)
+    Question(QuestionData("What is the difference between the greatest and smallest number?\n 99, 23, 30, 89, 1", [Data('88'), Data('76'), Data('98'), Data('22')], 2)),
+    Question(QuestionData("What is 6 times 2 minus 5?", [Data('12'), Data('7'), Data('17'), Data('16')], 1)),
+    Question(QuestionData("What is 2 tens, 2 ones minus 9 ones?", [Data('13'), Data('12'), Data('31'), Data('14')], 0))
 ]
 qnum = 0
 score = 0
@@ -281,14 +294,14 @@ def main():
     '''
     # welcome_sound.play()
     setup_frame()
-    global current_question
-    current_question.printQuestion()
-    current_question.printQuestion('A')
-    current_question.printQuestion('C')
-    current_question.resetQuestion()
-    current_question.printQuestion()
-    current_question.printQuestion('C')
-    current_question.printQuestion(q1.getCorrectData())
+    # global current_question
+    # current_question.printQuestion()
+    # current_question.printQuestion('A')
+    # current_question.printQuestion('C')
+    # current_question.resetQuestion()
+    # current_question.printQuestion()
+    # current_question.printQuestion('C')
+    # current_question.printQuestion(q1.getCorrectData())
 
 
 if __name__ == '__main__':
