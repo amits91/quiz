@@ -148,6 +148,24 @@ class QuestionDataGreatSmall(QuestionData):
     def __init__(self):
         self.randomizeData()
 
+class QuestionDataDivideGirls(QuestionData):
+    def randomizeData(self):
+        self._num = random.randint(1, 7)
+        self._girls = random.randint(3, 10)
+        self._girls2 = random.randint(1, self._girls)
+        self._text = "Divide {0} chocolates between {1} girls. How many with {2} girls get?"\
+            .format(str(self._num * self._girls), str(self._girls), str(self._girls2))
+        a = self._num * self._girls2
+        b = self._num * self._girls2 - 1
+        c = self._num * self._girls2 + 1
+        d = self._num * self._girls
+        self._choices = conv_choice_list([a, b, c, d])
+        self._correct = CHOICE_LABELS[0]
+        QuestionData.randomizeData(self)
+    def __init__(self):
+        self.randomizeData()
+
+
 class Question:
     '''
     Textual Question
@@ -217,16 +235,25 @@ class Question:
         self._user_choice = None
 
 questions = [
+    Question(QuestionDataDivideGirls()),
     Question(QuestionDataTimesSum()),
     Question(QuestionDataGreatSmall()),
+    Question(QuestionDataDivideGirls()),
     Question(QuestionDataTimesSum()),
     Question(QuestionDataGreatSmall()),
+    Question(QuestionDataDivideGirls()),
     Question(QuestionDataTimesSum()),
     Question(QuestionDataGreatSmall()),
+    Question(QuestionDataDivideGirls()),
     Question(QuestionDataTimesSum()),
     Question(QuestionDataGreatSmall()),
-    Question(QuestionData("What is 2 tens, 2 ones minus 9 ones?", ['13', '12', '31', '14'], 0))
-]
+    Question(QuestionDataDivideGirls()),
+    Question(QuestionDataTimesSum()),
+    Question(QuestionDataGreatSmall()),
+    Question(QuestionDataDivideGirls()),
+    Question(QuestionDataTimesSum()),
+    Question(QuestionDataGreatSmall()),
+    Question(QuestionDataGreatSmall()) ]
 qnum = 0
 score = 0
 def init_game():
