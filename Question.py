@@ -339,7 +339,7 @@ class Quiz:
             canvas.draw_text(str(self.latestScore()) + '/' + str(self.getNumQuestions()), [SCORE_X + 10, SCORE_Y + FONT_SIZE + 5], FONT_SIZE, FONT_COLOR)
             self._curr_question.draw(canvas)
             if self._finished == True:
-                canvas.draw_text("Finished. Press 'Restart' to start new game. 'Prev' to review.", [50, HEIGHT - 50], 20, 'Red')
+                canvas.draw_text("Finished. Press 'Restart' to start new game. 'Review' to review.", [50, HEIGHT - 50], 20, 'Red')
 
     def setUserChoice(self, choice):
         if self._finished == False and self._curr_question != None:
