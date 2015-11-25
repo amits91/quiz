@@ -178,11 +178,13 @@ def timer_handler():
 def startTimer():
     global timeSec, timer
     timeSec = 0
-    timer.start()
+    if timer != None:
+        timer.start()
 
 def stopTimer():
     global timeSec, timer
-    timer.stop()
+    if timer != None:
+        timer.stop()
     return timeSec
 
 class Question:
@@ -259,7 +261,9 @@ class Question:
             return 0
     def resetQuestion(self):
         self._question.randomizeData()
+        self.stopTimer()
         self._user_choice = None
+        self._elapsedTime = 0
 
 class Quiz:
 
@@ -345,7 +349,31 @@ class Quiz:
         if self._finished == False and self._curr_question != None:
             self._curr_question.setUserChoice(choice)
 
+class QuestionDataBorrowSub(QuestionData):
+    def randomizeData(self):
+        d1 = random.randint(0, 10) * 10
+        d2 = random.randint(0, 10) * 10
+        self._bnum = max(d1, d2)
+        self._snum = min(d1, d2)
+        d1 = random.randint(0, 10)
+        d2 = random.randint(0, 10)
+        self._bnum += min(d1, d2)
+        self._snum += max(d1, d2)
+        if self._bnum < self._snum:
+            self._bnum, self._snum = self._snum, self._bnum
+        self._text = "What is {0} - {1}?" \
+            .format(str(self._bnum), str(self._snum))
+        a = self._bnum - self._snum
+        b = abs(a - 1)
+        c = a + 1
+        d = self._bnum + self._snum
+        self._choices = conv_choice_list([a, b, c, d])
+        self._correct = CHOICE_LABELS[0]
+        QuestionData.randomizeData(self)
+    def __init__(self):
+        self.randomizeData()
 questions = [
+    QuestionDataBorrowSub(),
     QuestionDataDivideGirls(),
     QuestionDataTimesSum(),
     QuestionDataGreatSmall()]
