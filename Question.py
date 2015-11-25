@@ -14,8 +14,13 @@ FONT_COLOR = 'Black'
 FONT_SIZE = 15
 SCORE_X = 680
 SCORE_Y = 25
+QUES_X = 10
+TIMER_X = (SCORE_X - QUES_X)/2
 quiz_started = False
 quiz_finished = False
+current_question = None
+timeSec = 0
+timer = None
 
 # DESKTOP = False
 if DESKTOP == False:
@@ -165,6 +170,19 @@ class QuestionDataDivideGirls(QuestionData):
     def __init__(self):
         self.randomizeData()
 
+def timer_handler():
+    global timeSec
+    timeSec +=1
+
+def startTimer():
+    global timeSec, timer
+    timeSec = 0
+    timer.start()
+
+def stopTimer():
+    global timeSec, timer
+    timer.stop()
+    return timeSec
 
 class Question:
     '''
@@ -173,7 +191,15 @@ class Question:
     def __init__(self, question):
         self._question = question
         self._user_choice = None
+        self._elapsedTime = 0
 
+    def getElapsedTime(self):
+        return self._elapsedTime
+    def startTimer(self):
+        self._elapsedTime = 0
+        startTimer()
+    def stopTimer(self):
+        self._elapsedTime = stopTimer()
     def getCorrectData(self):
         return self._question.getCorrectChoice()
     def __str__(self):
@@ -282,7 +308,10 @@ def nextQuestion():
         quiz_finished = True
         qnum = qnum - 1
     else:
+        if current_question != None:
+            current_question.stopTimer()
         current_question = questions[qnum]
+        current_question.startTimer()
 def resetQuestion():
     global current_question
     current_question.resetQuestion()
@@ -303,10 +332,12 @@ def selectD():
     current_question.setUserChoice('D')
 
 def drawQuestion(canvas):
-    global current_question, qnum, score, questions
-    canvas.draw_text("Question", [10, SCORE_Y], FONT_SIZE, FONT_COLOR)
+    global current_question, qnum, score, questions, timeSec
+    canvas.draw_text("Question", [QUES_X, SCORE_Y], FONT_SIZE, FONT_COLOR)
+    canvas.draw_text("Elapsed Time", [TIMER_X, SCORE_Y], FONT_SIZE, FONT_COLOR)
     canvas.draw_text("Score", [SCORE_X, SCORE_Y], FONT_SIZE, FONT_COLOR)
-    canvas.draw_text(str(qnum + 1), [20, SCORE_Y + FONT_SIZE + 5], FONT_SIZE, FONT_COLOR)
+    canvas.draw_text(str(qnum + 1), [QUES_X + 10, SCORE_Y + FONT_SIZE + 5], FONT_SIZE, FONT_COLOR)
+    canvas.draw_text(str(timeSec) + " sec", [TIMER_X + 10, SCORE_Y + FONT_SIZE + 5], FONT_SIZE, FONT_COLOR)
     canvas.draw_text(str(score) + '/' + str(len(questions)), [SCORE_X + 10, SCORE_Y + FONT_SIZE + 5], FONT_SIZE, FONT_COLOR)
     current_question.draw(canvas)
     if quiz_finished == True:
@@ -327,7 +358,9 @@ def draw(canvas):
 
 def setup_frame():
     # initialize stuff
+    global timer
     frame = simplegui.create_frame("QUIZ", WIDTH, HEIGHT)
+    timer = simplegui.create_timer(1000, timer_handler)
     frame.set_canvas_background("Pink")
     # register handlers
     #frame.set_keyup_handler(keyup)
@@ -344,9 +377,7 @@ def setup_frame():
     frame.add_button("B", selectB, 100)
     frame.add_button("C", selectC, 100)
     frame.add_button("D", selectD, 100)
-    #timer = simplegui.create_timer(1000.0, rock_spawner)
     # get things rolling
-    #timer.start()
     init_game()
     frame.start()
 
