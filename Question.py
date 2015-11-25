@@ -21,6 +21,7 @@ quiz_finished = False
 current_question = None
 timeSec = 0
 timer = None
+quiz = None
 
 # DESKTOP = False
 if DESKTOP == False:
@@ -260,105 +261,126 @@ class Question:
         self._question.randomizeData()
         self._user_choice = None
 
+class Quiz:
+
+    def reset(self):
+        self._finished = False
+        self._curr_idx = -1
+        self._curr_question = None
+        self._score = 0
+        for i in range(self.getNumQuestions()):
+            self._questions[i].resetQuestion()
+
+    def __init__(self, questions):
+        self._questions = questions
+        self.reset()
+
+    def getAllQuestions(self):
+        return self._questions
+
+    def getNumQuestions(self):
+        return len(self._questions)
+
+    def currQuestionNum(self):
+        return self._curr_idx + 1
+
+    def getQuestion(self, qno):
+        return self._questions[qno - 1]
+
+    def score(self):
+        return self._score
+
+    def latestScore(self):
+        tempScore = 0
+        if self._finished == False and self._curr_question != None:
+            tempScore = self._curr_question.isCorrect()
+        return self._score + tempScore
+
+    def getQuesTime(self):
+        if self._finished == False:
+            return timeSec
+        elif self._curr_question != None:
+            return self._curr_question.getElapsedTime()
+        else:
+            return 0
+
+
+    def currentQuestion(self):
+        return self._curr_question
+
+    def nextQuestion(self):
+        num = self.getNumQuestions()
+        if self._finished == False and self._curr_question != None:
+            self._score += self._curr_question.isCorrect()
+            self._curr_question.stopTimer()
+        self._curr_idx += 1
+        if self._curr_idx == num:
+            self._finished = True
+            self._curr_idx -= 1
+        self._curr_question = self._questions[self._curr_idx]
+        if self._finished == False:
+            self._curr_question.startTimer()
+
+    def prevQuestion(self):
+        if self._finished:
+            self._curr_idx = (self._curr_idx - 1) % self.getNumQuestions()
+            self._curr_question = self._questions[self._curr_idx]
+
+    def draw(self, canvas):
+        if self._curr_question == None:
+            canvas.draw_text("Welcome Shambhavi", [150, 100], 40, FONT_COLOR)
+            canvas.draw_image(betu_image, betu_info.get_center(), betu_info.get_size(), [WIDTH / 2, HEIGHT / 2], betu_info.get_size())
+        else:
+            canvas.draw_text("Question", [QUES_X, SCORE_Y], FONT_SIZE, FONT_COLOR)
+            canvas.draw_text("Elapsed Time", [TIMER_X, SCORE_Y], FONT_SIZE, FONT_COLOR)
+            canvas.draw_text("Score", [SCORE_X, SCORE_Y], FONT_SIZE, FONT_COLOR)
+            canvas.draw_text(str(self.currQuestionNum()), [QUES_X + 10, SCORE_Y + FONT_SIZE + 5], FONT_SIZE, FONT_COLOR)
+            canvas.draw_text(str(self.getQuesTime()) + " sec", [TIMER_X + 10, SCORE_Y + FONT_SIZE + 5], FONT_SIZE, FONT_COLOR)
+            canvas.draw_text(str(self.latestScore()) + '/' + str(self.getNumQuestions()), [SCORE_X + 10, SCORE_Y + FONT_SIZE + 5], FONT_SIZE, FONT_COLOR)
+            self._curr_question.draw(canvas)
+            if self._finished == True:
+                canvas.draw_text("Finished. Press 'Restart' to start new game. 'Prev' to review.", [50, HEIGHT - 50], 20, 'Red')
+
+    def setUserChoice(self, choice):
+        if self._finished == False and self._curr_question != None:
+            self._curr_question.setUserChoice(choice)
+
 questions = [
     Question(QuestionDataDivideGirls()),
     Question(QuestionDataTimesSum()),
-    Question(QuestionDataGreatSmall()),
-    Question(QuestionDataDivideGirls()),
-    Question(QuestionDataTimesSum()),
-    Question(QuestionDataGreatSmall()),
-    Question(QuestionDataDivideGirls()),
-    Question(QuestionDataTimesSum()),
-    Question(QuestionDataGreatSmall()),
-    Question(QuestionDataDivideGirls()),
-    Question(QuestionDataTimesSum()),
-    Question(QuestionDataGreatSmall()),
-    Question(QuestionDataDivideGirls()),
-    Question(QuestionDataTimesSum()),
-    Question(QuestionDataGreatSmall()),
-    Question(QuestionDataDivideGirls()),
-    Question(QuestionDataTimesSum()),
-    Question(QuestionDataGreatSmall()),
     Question(QuestionDataGreatSmall()) ]
-qnum = 0
-score = 0
+
 def init_game():
-    global quiz_started, qnum, current_question, score, quiz_finished
-    quiz_started = False
-    qnum = 0
-    score = 0
-    quiz_finished = False
-    for i in range(len(questions)):
-        questions[i].resetQuestion()
+    quiz.reset()
 
 def restart():
-    global quiz_started
     init_game()
 
 def nextQuestion():
-    global quiz_started, current_question, questions, qnum, score, quiz_finished
-    if quiz_started == False:
-        qnum = 0
-    else:
-        if quiz_finished == False:
-            score = score + current_question.isCorrect()
-        qnum = qnum + 1
-    quiz_started = True
-    if qnum == len(questions):
-        quiz_finished = True
-        qnum = qnum - 1
-    else:
-        if current_question != None:
-            current_question.stopTimer()
-        current_question = questions[qnum]
-        current_question.startTimer()
+    quiz.nextQuestion()
+
 def resetQuestion():
-    global current_question
-    current_question.resetQuestion()
+    quiz.currentQuestion().resetQuestion()
 
 def prev():
-    pass
+    quiz.prevQuestion()
+
 def selectA():
-    global current_question
-    current_question.setUserChoice('A')
+    quiz.setUserChoice('A')
 def selectB():
-    global current_question
-    current_question.setUserChoice('B')
+    quiz.setUserChoice('B')
 def selectC():
-    global current_question
-    current_question.setUserChoice('C')
+    quiz.setUserChoice('C')
 def selectD():
-    global current_question
-    current_question.setUserChoice('D')
-
-def drawQuestion(canvas):
-    global current_question, qnum, score, questions, timeSec
-    canvas.draw_text("Question", [QUES_X, SCORE_Y], FONT_SIZE, FONT_COLOR)
-    canvas.draw_text("Elapsed Time", [TIMER_X, SCORE_Y], FONT_SIZE, FONT_COLOR)
-    canvas.draw_text("Score", [SCORE_X, SCORE_Y], FONT_SIZE, FONT_COLOR)
-    canvas.draw_text(str(qnum + 1), [QUES_X + 10, SCORE_Y + FONT_SIZE + 5], FONT_SIZE, FONT_COLOR)
-    canvas.draw_text(str(timeSec) + " sec", [TIMER_X + 10, SCORE_Y + FONT_SIZE + 5], FONT_SIZE, FONT_COLOR)
-    canvas.draw_text(str(score) + '/' + str(len(questions)), [SCORE_X + 10, SCORE_Y + FONT_SIZE + 5], FONT_SIZE, FONT_COLOR)
-    current_question.draw(canvas)
-    if quiz_finished == True:
-        canvas.draw_text("Finished. Press 'Restart' to start new game.", [50, HEIGHT - 50], 20, 'Red')
-
-def drawWelcomeScreen(canvas):
-    canvas.draw_text("Welcome Shambhavi", [150, 100], 40, FONT_COLOR)
-    canvas.draw_image(betu_image, betu_info.get_center(), betu_info.get_size(), [WIDTH / 2, HEIGHT / 2], betu_info.get_size())
-
+    quiz.setUserChoice('D')
 
 def draw(canvas):
-    global quiz_started
-    # draw UI
-    if quiz_started == False:
-        drawWelcomeScreen(canvas)
-    else:
-        drawQuestion(canvas)
+    quiz.draw(canvas)
 
 def setup_frame():
     # initialize stuff
-    global timer
+    global timer, quiz, questions
+    quiz = Quiz(questions)
     frame = simplegui.create_frame("QUIZ", WIDTH, HEIGHT)
     timer = simplegui.create_timer(1000, timer_handler)
     frame.set_canvas_background("Pink")
@@ -370,8 +392,8 @@ def setup_frame():
     frame.add_label("Game Controls")
     frame.add_button("Restart", restart, 100)
     frame.add_button("Next Question", nextQuestion, 100)
-    # frame.add_button("Previous Question", prev, 100)
-    frame.add_button("Reset Question", resetQuestion, 100)
+    frame.add_button("Previous Question", prev, 100)
+    # frame.add_button("Reset Question", resetQuestion, 100)
     frame.add_label("Select Your Answer")
     frame.add_button("A", selectA, 100)
     frame.add_button("B", selectB, 100)
