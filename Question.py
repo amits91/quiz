@@ -272,7 +272,7 @@ class Quiz:
             self._questions[i].resetQuestion()
 
     def __init__(self, questions):
-        self._questions = questions
+        self._questions = [Question(qd) for qd in questions]
         self.reset()
 
     def getAllQuestions(self):
@@ -346,9 +346,9 @@ class Quiz:
             self._curr_question.setUserChoice(choice)
 
 questions = [
-    Question(QuestionDataDivideGirls()),
-    Question(QuestionDataTimesSum()),
-    Question(QuestionDataGreatSmall()) ]
+    QuestionDataDivideGirls(),
+    QuestionDataTimesSum(),
+    QuestionDataGreatSmall()]
 
 def init_game():
     quiz.reset()
@@ -392,7 +392,7 @@ def setup_frame():
     frame.add_label("Game Controls")
     frame.add_button("Restart", restart, 100)
     frame.add_button("Next Question", nextQuestion, 100)
-    frame.add_button("Previous Question", prev, 100)
+    frame.add_button("Review Question", prev, 100)
     # frame.add_button("Reset Question", resetQuestion, 100)
     frame.add_label("Select Your Answer")
     frame.add_button("A", selectA, 100)
