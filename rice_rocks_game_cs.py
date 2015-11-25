@@ -1,5 +1,6 @@
 # implementation of Spaceship - program template for RiceRocks
-import simplegui
+# import simplegui
+import simpleguitk as simplegui
 import math
 import random
 

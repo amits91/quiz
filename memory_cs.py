@@ -1,6 +1,7 @@
 # implementation of card game - Memory
 
-import simplegui
+# import simplegui
+import simpleguitk as simplegui
 import random
 
 nums = []
