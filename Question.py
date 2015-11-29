@@ -15,6 +15,7 @@ FONT_SIZE = 15
 SCORE_X = 680
 SCORE_Y = 25
 QUES_X = 10
+TRIES_X = QUES_X + (10 * FONT_SIZE)
 TIMER_X = (SCORE_X - QUES_X)/2
 quiz_started = False
 quiz_finished = False
@@ -156,15 +157,40 @@ class QuestionDataGreatSmall(QuestionData):
 
 class QuestionDataDivideGirls(QuestionData):
     def randomizeData(self):
-        self._num = random.randint(1, 7)
-        self._girls = random.randint(3, 10)
+        self._num = random.randint(2, 5)
+        self._girls = random.randint(3, 6)
         self._girls2 = random.randint(1, self._girls)
-        self._text = "Divide {0} chocolates between {1} girls. How many with {2} girls get?"\
-            .format(str(self._num * self._girls), str(self._girls), str(self._girls2))
+        if self._girls2 == 1:
+            girlstr = 'girl'
+        else:
+            girlstr = 'girls'
+        self._text = "Divide {0} chocolates equally between {1} girls. How many will {2} {3} get?"\
+            .format(str(self._num * self._girls),
+                    str(self._girls),
+                    str(self._girls2),
+                    girlstr
+                    )
         a = self._num * self._girls2
         b = self._num * self._girls2 - 1
         c = self._num * self._girls2 + 1
         d = self._num * self._girls
+        self._choices = conv_choice_list([a, b, c, d])
+        self._correct = CHOICE_LABELS[0]
+        QuestionData.randomizeData(self)
+    def __init__(self):
+        self.randomizeData()
+class QuestionDataDivideGroups(QuestionData):
+    def randomizeData(self):
+        self._num = random.randint(2, 5)
+        self._groups = random.randint(3, 6)
+        self._text = "How many groups of {0} pencils can be formed from {1} pencils?" \
+            .format(
+            str(self._groups),
+            str(self._num * self._groups))
+        a = self._num
+        b = self._num + 1
+        c = self._num - 1
+        d = self._groups
         self._choices = conv_choice_list([a, b, c, d])
         self._correct = CHOICE_LABELS[0]
         QuestionData.randomizeData(self)
@@ -195,6 +221,10 @@ class Question:
         self._question = question
         self._user_choice = None
         self._elapsedTime = 0
+        self._numTries = 0
+
+    def getNumTries(self):
+        return self._numTries
 
     def getElapsedTime(self):
         return self._elapsedTime
@@ -253,6 +283,7 @@ class Question:
             pos[1] = pos[1] + FONT_SIZE * 2
             canvas.draw_text(msg, pos, font_size, font_color)
     def setUserChoice(self, choice):
+        self._numTries += 1
         self._user_choice = choice
     def isCorrect(self):
         if self._question.isCorrectChoice(self._user_choice):
@@ -264,6 +295,7 @@ class Question:
         self.stopTimer()
         self._user_choice = None
         self._elapsedTime = 0
+        self._numTries = 0
 
 class Quiz:
 
@@ -336,9 +368,11 @@ class Quiz:
             canvas.draw_image(betu_image, betu_info.get_center(), betu_info.get_size(), [WIDTH / 2, HEIGHT / 2], betu_info.get_size())
         else:
             canvas.draw_text("Question", [QUES_X, SCORE_Y], FONT_SIZE, FONT_COLOR)
+            canvas.draw_text("Tries", [TRIES_X, SCORE_Y], FONT_SIZE, FONT_COLOR)
             canvas.draw_text("Elapsed Time", [TIMER_X, SCORE_Y], FONT_SIZE, FONT_COLOR)
             canvas.draw_text("Score", [SCORE_X, SCORE_Y], FONT_SIZE, FONT_COLOR)
             canvas.draw_text(str(self.currQuestionNum()), [QUES_X + 10, SCORE_Y + FONT_SIZE + 5], FONT_SIZE, FONT_COLOR)
+            canvas.draw_text(str(self._curr_question.getNumTries()), [TRIES_X + 10, SCORE_Y + FONT_SIZE + 5], FONT_SIZE, FONT_COLOR)
             canvas.draw_text(str(self.getQuesTime()) + " sec", [TIMER_X + 10, SCORE_Y + FONT_SIZE + 5], FONT_SIZE, FONT_COLOR)
             canvas.draw_text(str(self.latestScore()) + '/' + str(self.getNumQuestions()), [SCORE_X + 10, SCORE_Y + FONT_SIZE + 5], FONT_SIZE, FONT_COLOR)
             self._curr_question.draw(canvas)
@@ -373,6 +407,13 @@ class QuestionDataBorrowSub(QuestionData):
     def __init__(self):
         self.randomizeData()
 questions = [
+    QuestionDataDivideGroups(),
+    QuestionDataDivideGirls(),
+    QuestionDataDivideGroups(),
+    QuestionDataDivideGirls(),
+    QuestionDataDivideGroups(),
+    QuestionDataDivideGirls(),
+    QuestionDataDivideGroups(),
     QuestionDataBorrowSub(),
     QuestionDataDivideGirls(),
     QuestionDataTimesSum(),
