@@ -124,79 +124,6 @@ class QuestionData(Data):
             qstr = qstr + ch + ': ' + str(self._choices[ch]) + "\n"
         return qstr
 
-class QuestionDataTimesSum(QuestionData):
-    def randomizeData(self):
-        self._times = random.randint(2, 11)
-        self._num = random.choice([10, 25, 20, 50, random.randint(2, 10)])
-        self._text = "What is {0} times {1}?".format(str(self._times), str(self._num))
-        t = self._times
-        n = self._num
-        self._choices = conv_choice_list([str(t * n), str(t + n), str(abs((t + 1) * n)), str((t - 1) * n)])
-        self._correct = CHOICE_LABELS[0]
-        QuestionData.randomizeData(self)
-    def __init__(self):
-        self.randomizeData()
-
-# print QuestionDataTimesSum()
-
-class QuestionDataGreatSmall(QuestionData):
-    def randomizeData(self):
-        self._listsz = random.randint(8, 13)
-        self._nums = random.sample(range(1, 100), self._listsz)
-        self._text = "What is the difference between the greatest and smallest number?\n {0}".format(str(self._nums))
-        sorted_list = sorted(self._nums)
-        a = abs(sorted_list[0] - sorted_list[-1])
-        b = abs(sorted_list[1] - sorted_list[-1])
-        c = abs(sorted_list[0] - sorted_list[-2])
-        d = 'None of these'
-        self._choices = conv_choice_list([a, b, c, d])
-        self._correct = CHOICE_LABELS[0]
-        QuestionData.randomizeData(self)
-    def __init__(self):
-        self.randomizeData()
-
-class QuestionDataDivideGirls(QuestionData):
-    def randomizeData(self):
-        self._num = random.randint(2, 5)
-        self._girls = random.randint(3, 6)
-        self._girls2 = random.randint(1, self._girls)
-        if self._girls2 == 1:
-            girlstr = 'girl'
-        else:
-            girlstr = 'girls'
-        self._text = "Divide {0} chocolates equally between {1} girls. How many will {2} {3} get?"\
-            .format(str(self._num * self._girls),
-                    str(self._girls),
-                    str(self._girls2),
-                    girlstr
-                    )
-        a = self._num * self._girls2
-        b = self._num * self._girls2 - 1
-        c = self._num * self._girls2 + 1
-        d = self._num * self._girls
-        self._choices = conv_choice_list([a, b, c, d])
-        self._correct = CHOICE_LABELS[0]
-        QuestionData.randomizeData(self)
-    def __init__(self):
-        self.randomizeData()
-class QuestionDataDivideGroups(QuestionData):
-    def randomizeData(self):
-        self._num = random.randint(2, 5)
-        self._groups = random.randint(3, 6)
-        self._text = "How many groups of {0} pencils can be formed from {1} pencils?" \
-            .format(
-            str(self._groups),
-            str(self._num * self._groups))
-        a = self._num
-        b = self._num + 1
-        c = self._num - 1
-        d = self._groups
-        self._choices = conv_choice_list([a, b, c, d])
-        self._correct = CHOICE_LABELS[0]
-        QuestionData.randomizeData(self)
-    def __init__(self):
-        self.randomizeData()
-
 def timer_handler():
     global timeSec
     timeSec +=1
@@ -382,6 +309,79 @@ class Quiz:
     def setUserChoice(self, choice):
         if self._finished == False and self._curr_question != None:
             self._curr_question.setUserChoice(choice)
+
+class QuestionDataTimesSum(QuestionData):
+    def randomizeData(self):
+        self._times = random.randint(2, 11)
+        self._num = random.choice([10, 25, 20, 50, random.randint(2, 10)])
+        self._text = "What is {0} times {1}?".format(str(self._times), str(self._num))
+        t = self._times
+        n = self._num
+        self._choices = conv_choice_list([str(t * n), str(t + n), str(abs((t + 1) * n)), str((t - 1) * n)])
+        self._correct = CHOICE_LABELS[0]
+        QuestionData.randomizeData(self)
+    def __init__(self):
+        self.randomizeData()
+
+
+class QuestionDataGreatSmall(QuestionData):
+    def randomizeData(self):
+        self._listsz = random.randint(8, 13)
+        self._nums = random.sample(range(1, 100), self._listsz)
+        self._text = "What is the difference between the greatest and smallest number?\n {0}".format(str(self._nums))
+        sorted_list = sorted(self._nums)
+        a = abs(sorted_list[0] - sorted_list[-1])
+        b = abs(sorted_list[1] - sorted_list[-1])
+        c = abs(sorted_list[0] - sorted_list[-2])
+        d = 'None of these'
+        self._choices = conv_choice_list([a, b, c, d])
+        self._correct = CHOICE_LABELS[0]
+        QuestionData.randomizeData(self)
+    def __init__(self):
+        self.randomizeData()
+
+class QuestionDataDivideGirls(QuestionData):
+    def randomizeData(self):
+        self._num = random.randint(2, 5)
+        self._girls = random.randint(3, 6)
+        self._girls2 = random.randint(1, self._girls - 1)
+        if self._girls2 == 1:
+            girlstr = 'girl'
+        else:
+            girlstr = 'girls'
+        self._text = "Divide {0} chocolates equally between {1} girls. How many will {2} {3} get?" \
+            .format(str(self._num * self._girls),
+                    str(self._girls),
+                    str(self._girls2),
+                    girlstr
+                    )
+        a = self._num * self._girls2
+        b = self._num * self._girls2 - 1
+        c = self._num * self._girls2 + 1
+        d = self._num * self._girls
+        self._choices = conv_choice_list([a, b, c, d])
+        self._correct = CHOICE_LABELS[0]
+        QuestionData.randomizeData(self)
+    def __init__(self):
+        self.randomizeData()
+
+class QuestionDataDivideGroups(QuestionData):
+    def randomizeData(self):
+        self._num = random.randint(2, 5)
+        self._groups = random.randint(3, 6)
+        self._text = "How many groups of {0} pencils can be formed from {1} pencils?" \
+            .format(
+            str(self._groups),
+            str(self._num * self._groups))
+        a = self._num
+        b = self._num + 1
+        c = self._num - 1
+        d = self._groups
+        self._choices = conv_choice_list([a, b, c, d])
+        self._correct = CHOICE_LABELS[0]
+        QuestionData.randomizeData(self)
+    def __init__(self):
+        self.randomizeData()
 
 class QuestionDataBorrowSub(QuestionData):
     def randomizeData(self):
